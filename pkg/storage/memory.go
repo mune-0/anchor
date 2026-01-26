@@ -22,12 +22,21 @@ func NewMemStore () *MemStore {
 
 // Get returns a value by key
 func  (mem *MemStore) Get (ctx context.Context, key string) ([]byte, error) {
+	// Check context before acquiring lock
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	if strings.TrimSpace(key) == "" {
 		return nil, ErrInvalidKey
 	}
 
 	mem.mut.Lock()
 	defer mem.mut.Unlock()
+
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
 
 	// Checking if memory store is already closed
 	if mem.closed {
@@ -46,12 +55,22 @@ func  (mem *MemStore) Get (ctx context.Context, key string) ([]byte, error) {
 
 // Put stores a key-value pair
 func (mem *MemStore) Put (ctx context.Context, key string, value []byte) error {
+	// Check context before acquiring lock
+	if err := ctx.Err(); err != nil {
+		return err // Returns context.Canceled or context.DeadlineExceeded
+	}
+
 	if strings.TrimSpace(key) == "" {
 		return ErrInvalidKey
 	}
 
 	mem.mut.RLock()
 	defer mem.mut.RUnlock()
+
+	// Check context again after acquiring lock
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	
 	if mem.closed {
 		return ErrStoreClosed
@@ -66,12 +85,23 @@ func (mem *MemStore) Put (ctx context.Context, key string, value []byte) error {
 
 // Delete removes a key
 func (mem *MemStore) Delete(ctx context.Context, key string) error {
+	// Check context before acquiring lock
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+
 	if strings.TrimSpace(key) == "" {
 		return ErrInvalidKey
 	}
 
 	mem.mut.Lock()
 	defer mem.mut.Unlock()
+
+
+	// Check context again after acquiring lock
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 
 	delete(mem.data, key)
 	return nil
