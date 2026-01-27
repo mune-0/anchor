@@ -31,8 +31,8 @@ func  (mem *MemStore) Get (ctx context.Context, key string) ([]byte, error) {
 		return nil, ErrInvalidKey
 	}
 
-	mem.mut.Lock()
-	defer mem.mut.Unlock()
+	mem.mut.RLock()
+	defer mem.mut.RUnlock()
 
 	if err := ctx.Err(); err != nil {
 		return nil, err
@@ -64,8 +64,8 @@ func (mem *MemStore) Put (ctx context.Context, key string, value []byte) error {
 		return ErrInvalidKey
 	}
 
-	mem.mut.RLock()
-	defer mem.mut.RUnlock()
+	mem.mut.Lock()
+	defer mem.mut.Unlock()
 
 	// Check context again after acquiring lock
 	if err := ctx.Err(); err != nil {
