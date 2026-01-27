@@ -18,6 +18,23 @@ test:
 	@echo "Running tests..."
 	go test -v ./...
 
+## test-race: Run tests with race detector
+test-race:
+	@echo "Running tests with race detector..."
+	@go test -race -v ./...
+
+## Run benchmarks
+bench:
+	@echo "Running benchmarks..."
+	@go test -bench=. -benchmem ./...
+
+## Generate coverage report
+test-coverage:
+	@echo "Generating coverage..."
+	@go test -coverprofile=coverage.txt -covermode=atomic ./...
+	@go tool cover -html=coverage.txt -o coverage.html
+	@echo "✓ Coverage: coverage.html"
+
 ## clean: Remove build artifacts
 clean:
 	@echo "Cleaning up..."
