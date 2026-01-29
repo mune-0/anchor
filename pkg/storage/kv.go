@@ -1,6 +1,9 @@
 package storage
 
-import "context"
+import (
+	"context"
+	"com.github/mune-0/anchor/pkg/wal"
+)
 
 // Store defines the standard behavior for a Key-Value storage engine.
 type Store interface {
@@ -23,4 +26,8 @@ type Store interface {
 	// Close gracefully shuts down the store, flushing any pending writes.
 	// After Close is called, all other methods should return ErrStoreClosed.
 	Close(ctx context.Context) error
+}
+
+type WALWriter interface {
+	SyncWrite(entry *wal.LogEntry) error
 }
