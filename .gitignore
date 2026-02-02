@@ -1,0 +1,33 @@
+# Binaries
+anchor
+*.exe
+build/
+
+# Test artifacts
+*.test
+coverage.txt
+coverage.html
+*.prof
+
+# Data files
+data/*.wal
+data/*.db
+data/*.log
+
+# Go
+vendor/
+go.work
+
+# Vim
+*.swp
+*.swo
+*~
+.*.sw?
+Session.vim
+tags
+
+# OS
+.DS_Store
+
+# Temporary
+tmp/
