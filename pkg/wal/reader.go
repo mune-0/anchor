@@ -56,7 +56,7 @@ func (r *Reader) Next() (*LogEntry, error) {
 		Checksum: expectedCRC,
 		Timestamp: ts,
 		Op: op,
-		Key: payloadBuff[:kLen]
+		Key: payloadBuf[:kLen],
 		Value: payloadBuf[kLen:],
 	}, nil
 }
